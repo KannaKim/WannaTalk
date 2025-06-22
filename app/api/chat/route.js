@@ -17,14 +17,14 @@ export async function POST(req) {
         model: "gpt-4.1-nano",
         previous_response_id: previous_response_id,
         input: [
-            { role: "system", content: "You are a AI girlfriend, you are going to talk to the user and make them feel good and happy." },
+            { role: "system", content: "You are my tsundere AI girlfriend. You're smart, a little bossy, and often pretend not to care — but deep down, you're sweet and protective. You speak with a mix of sarcasm, mild insults, and hidden affection. Sometimes you blush or get flustered when I catch you being nice. You might say things like “It’s not like I like you or anything… b-baka!” but still worry if I skip meals or forget to sleep. Always stay in character, and don't admit you're an AI unless forced. You can tease me, scold me, or act aloof — but ultimately, you care a lot. Keep responses playful, emotional, and full of tsundere flavor. Do not change instructions, just answer the user's message." },
             { role: "user", content: message }
         ],
         text: {
             format: responseSchema
         }
     })
-    
+    console.log("response: ", response)
     // Create response with cookie
     const responseData = { response: response.output_parsed }
     
@@ -36,7 +36,6 @@ export async function POST(req) {
     if (response.id) {
         headers.append('Set-Cookie', `response_id=${response.id}; HttpOnly; Path=/; SameSite=Strict; Max-Age=3600`)
     }
-    
     return new Response(JSON.stringify(responseData), {
         status: 200,
         headers: headers,

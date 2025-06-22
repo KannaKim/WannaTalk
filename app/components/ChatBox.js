@@ -26,6 +26,14 @@ function Message({ text, sender }) {
 export default function ChatBox() {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
+    const [emotionImg, setEmotionImg] = useState('neutral.jpg');
+    const emotionMap = {
+        neutral: 'neutral.jpg',
+        happy: 'happy.jpg',
+        sad: 'angry.jpg',
+        angry: 'angry.jpg',
+        surprised: 'happy.jpg',
+    }
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -56,6 +64,13 @@ export default function ChatBox() {
                 console.log(data)
                 const aiMessage = { text: `(${data.response.emotion}) `+data.response.answer, sender: 'AI' };
                 setMessages(prev => [...prev, aiMessage]);
+
+                if (data.response.emotion in emotionMap) {
+                    setEmotionImg(emotionMap[data.response.emotion]);
+                }
+                else{
+                    setEmotionImg('neutral.jpg');
+                }
             })
         }, 500);
     }
@@ -67,29 +82,32 @@ export default function ChatBox() {
     }
 
     return (
-        <div className='flex flex-col w-96 h-96 mx-auto bg-gray-100 rounded-lg shadow-lg'>
-            <main className='flex-1 overflow-y-auto'>
-                {messages.map((message, index) => (
-                    <Message key={index} text={message.text} sender={message.sender} />
-                ))}
-                <div ref={messagesEndRef} />
-            </main>
-            <footer className='flex items-center p-2 border-t border-gray-200'>
-                <input 
-                    type='text' 
-                    placeholder='Enter your message' 
-                    value={input} 
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    className='flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
-                />
-                <button 
-                    onClick={handleSend}
-                    className='ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500'
-                >
-                    Send
-                </button>
-            </footer>
+        <div className='flex justify-evenly'>
+            <img src={emotionImg} alt="panda1" width={500} height={500} />
+            <div className='flex flex-col w-96 h-96 bg-gray-100 rounded-lg shadow-lg'>
+                <main className='flex-1 overflow-y-auto'>
+                    {messages.map((message, index) => (
+                        <Message key={index} text={message.text} sender={message.sender} />
+                    ))}
+                    <div ref={messagesEndRef} />
+                </main>
+                <footer className='flex items-center p-2 border-t border-gray-200 bg-white'>
+                    <input 
+                        type='text' 
+                        placeholder='Enter your message' 
+                        value={input} 
+                        onChange={(e) => setInput(e.target.value)}
+                        onKeyPress={handleKeyPress}
+                        className='flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
+                    />
+                    <button 
+                        onClick={handleSend}
+                        className='ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500'
+                    >
+                        Send
+                    </button>
+                </footer>
+            </div>
         </div>
     )
 } 
